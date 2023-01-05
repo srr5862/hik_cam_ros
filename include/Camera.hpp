@@ -52,10 +52,10 @@ namespace camera
         node.param("width",width,5472);
         node.param("height",height,3648);
         node.param("FrameRateEnable",FrameRateEnable,true);
-        node.param("FrameRate",FrameRate,5);
-        node.param("BrustFrameCount",BrustFrameCount,5);
+        node.param("FrameRate",FrameRate,60);
+        node.param("BrustFrameCount",BrustFrameCount,1);
         node.param("TriggerMode",TriggerMode,1);
-        node.param("TriggerSouce",TriggerSource,2);
+        node.param("TriggerSouce",TriggerSource,7);
 
 
         MV_CC_DEVICE_INFO_LIST stDeviceList;
@@ -96,12 +96,9 @@ namespace camera
         this->set(CAM_PROP_HEIGHT,height);
         this->set(CAM_PROP_FRAMERATEEnable,FrameRateEnable);
         if (FrameRateEnable)    this->set(CAM_PROP_FRAMERATE,FrameRate);
-        
         this->set(CAM_PROP_BURSTFRAMECOUNT,BrustFrameCount);
         this->set(CAM_PROP_TRIGGER_MODE,TriggerMode);
         this->set(CAM_PROP_TRIGGER_SOURCE,TriggerSource);
-
-
         nRet = MV_CC_SetEnumValue(handle,"TriggerMode",0);
         if (MV_OK == nRet){
             cout << "success set trigger" <<endl;
@@ -142,7 +139,7 @@ namespace camera
             if (nRet != MV_OK)  cout << "height error" <<endl;
             break;
         case CAM_PROP_FRAMERATEEnable:
-            nRet = MV_CC_SetFloatValue(handle,"AcquisitionFrameRateEnable",value);
+            nRet = MV_CC_SetBoolValue(handle,"AcquisitionFrameRateEnable",value);
             if (nRet != MV_OK)  cout << "framerateenable  error" <<endl;
             break;
         case CAM_PROP_FRAMERATE:
@@ -198,11 +195,10 @@ namespace camera
         //         break;
         // }
             startTime = static_cast<double>(cv::getTickCount());
-            nRet = MV_CC_GetOneFrameTimeout(pUser,pData,MAX_IMAGE_DATA_SIZE,&stImageInfo,15);
-            
+            nRet = MV_CC_GetOneFrameTimeout(pUser,pData,MAX_IMAGE_DATA_SIZE,&stImageInfo,60);
             if( nRet != MV_OK){
-                if(++empty_frame > 100){
-                    ROS_INFO("There are more than 100+ empty frame\n");
+                if(++empty_frame > 10000){
+                    ROS_INFO("There are more than 10000+ empty frame\n");
                     exit(-1);
                 }
                 continue;

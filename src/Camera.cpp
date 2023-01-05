@@ -21,7 +21,7 @@ int main(int argc,char *argv[]){
     sensor_msgs::CameraInfo camera_info_msg;    
     cv_bridge::CvImagePtr cv_ptr = boost::make_shared<cv_bridge::CvImage>();
     cv_ptr->encoding = sensor_msgs::image_encodings::RGB8;
-    ros::Rate loop_rate(1);
+    ros::Rate loop_rate(60);
     
     while(nh.ok()){
         loop_rate.sleep();
