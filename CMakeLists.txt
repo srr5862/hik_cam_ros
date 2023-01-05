@@ -1,6 +1,5 @@
 cmake_minimum_required(VERSION 2.8.11)
 add_compile_options(-std=c++11)
-project(Grab)
 
 find_package(
     catkin REQUIRED COMPONENTS
@@ -24,4 +23,9 @@ link_directories(
     )
 
 add_executable(MvCameraControl src/Camera.cpp)   
-target_link_libraries(MvCameraControl /opt/MVS/lib/64/libMvCameraControl.so pthread ${OpenCV_LIBS})
+target_link_libraries(
+    MvCameraControl 
+    /opt/MVS/lib/64/libMvCameraControl.so 
+    pthread 
+    ${OpenCV_LIBS} 
+    ${catkin_LIBRARIES})
