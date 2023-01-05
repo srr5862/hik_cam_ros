@@ -35,7 +35,7 @@ int main(int argc,char *argv[]){
         cv_ptr->image = src;
         image_msg = *(cv_ptr->toImageMsg());
         image_msg.header.stamp = ros::Time::now();
-        image_msg.header.frame_id = "hik_cam";
+        image_msg.header.frame_id = "map";
         camera_info_msg.header.frame_id = image_msg.header.frame_id;
 	    camera_info_msg.header.stamp = image_msg.header.stamp;
         img_pub.publish(image_msg, camera_info_msg);
