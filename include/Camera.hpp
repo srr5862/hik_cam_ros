@@ -52,14 +52,14 @@ namespace camera
     Camera::Camera(ros::NodeHandle &node)
     {
         handle = NULL;
-        node.param("width", width, 5472);
-        node.param("height", height, 3648);
+        node.param("width", width, 2448);
+        node.param("height", height, 2048);
         node.param("FrameRateEnable", FrameRateEnable, true);
-        node.param("FrameRate", FrameRate, 15);
+        node.param("FrameRate", FrameRate, 30);
         node.param("BrustFrameCount", BrustFrameCount, 1);
         node.param("TriggerMode", TriggerMode, 1);
-        node.param("TriggerSource", TriggerSource, 1);
-        node.param("AcquisitionMode", AcquisitionMode, 2);
+        node.param("TriggerSource", TriggerSource,7);
+        // node.param("AcquisitionMode", AcquisitionMode, 2);
 
         MV_CC_DEVICE_INFO_LIST stDeviceList;
         memset(&stDeviceList, 0, sizeof(MV_CC_DEVICE_INFO_LIST));
@@ -97,14 +97,14 @@ namespace camera
 
         this->set(CAM_PROP_WIDTH, width);
         this->set(CAM_PROP_HEIGHT, height);
-        this->set(CAM_PROP_ACQUISITIONMODE, AcquisitionMode);
+        // this->set(CAM_PROP_ACQUISITIONMODE, AcquisitionMode);
         this->set(CAM_PROP_FRAMERATEEnable, FrameRateEnable);
         if (FrameRateEnable)
             this->set(CAM_PROP_FRAMERATE, FrameRate);
         this->set(CAM_PROP_BURSTFRAMECOUNT, BrustFrameCount);
         this->set(CAM_PROP_TRIGGER_MODE, TriggerMode);
         this->set(CAM_PROP_TRIGGER_SOURCE, TriggerSource);
-        nRet = MV_CC_SetEnumValue(handle, "TriggerMode", 0);
+        nRet = MV_CC_SetEnumValue(handle, "TriggerMode", MV_TRIGGER_MODE_OFF);
         if (MV_OK == nRet)
         {
             cout << "success set trigger" << endl;
@@ -204,18 +204,20 @@ namespace camera
         while (ros::ok())
         {
             startTime = static_cast<double>(cv::getTickCount());
-            nRet = MV_CC_GetOneFrameTimeout(pUser, pData, MAX_IMAGE_DATA_SIZE, &stImageInfo, 100);
-            if (nRet != MV_OK)
-            {
-                empty_frame++;
-                cout << empty_frame << endl;
-                if (++empty_frame > 10000)
-                {
-                    ROS_INFO("There are more than 10000+ empty frame\n");
-                    exit(-1);
-                }
-                continue;
-            }
+            nRet = MV_CC_GetOneFrameTimeout(pUser, pData, MAX_IMAGE_DATA_SIZE, &stImageInfo, 1000);
+            // cout <<"width,height:"<< stImageInfo.nWidth<<stImageInfo.nHeight<<endl;
+            cout << "nret " << hex << nRet << endl;
+            // if (nRet != MV_OK)
+            // {
+            //     empty_frame++;
+            //     cout << empty_frame << endl;
+            //     if (++empty_frame > 10000)
+            //     {
+            //         ROS_INFO("There are more than 10000+ empty frame\n");
+            //         exit(-1);
+            //     }
+            //     continue;
+            // }
 
             stConvertParam.nWidth = stImageInfo.nWidth;
             stConvertParam.nHeight = stImageInfo.nHeight;
@@ -227,7 +229,7 @@ namespace camera
             stConvertParam.nDstBufferSize = MAX_IMAGE_DATA_SIZE;
             nRet = MV_CC_ConvertPixelType(pUser, &stConvertParam);
             pthread_mutex_lock(&mutex);
-            camera::frame = cv::Mat(stImageInfo.nHeight, stImageInfo.nWidth, CV_8UC3, pDataForRGB);
+            camera::frame = cv::Mat(stImageInfo.nHeight, stImageInfo.nWidth, CV_8UC3, pDataForRGB).clone();
             // cv::cvtColor(camera::frame,camera::frame,cv::COLOR_BGR2RGB);
             pthread_mutex_unlock(&mutex);
             double time = ((double)cv::getTickCount() - startTime) / cv::getTickFrequency();
