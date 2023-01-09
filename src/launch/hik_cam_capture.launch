@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+
+<launch>
+    <arg name="ori_img_height" default="2048"/>
+    <arg name="ori_img_width" default="2448"/>
+    <arg name="pub_img_height" default="512"/>
+    <arg name="pub_img_width" default="612"/>
+    <arg name="FrameRateEnable" default="true"/>
+    <arg name="FrameRate" default="20"/>
+    <arg name="TriggerMode" default="1"/>
+    <arg name="TriggerSource" default="7"/>
+    <arg name="BrustFrameCount" default="1"/>
+    <arg name="frame_id" default="map"/>
+    <arg name="image_topic" default="hik_cam/image"/>
+
+    
+
+    <node pkg="hik_cam_ros" name="hik_cam_capture" type="hik_cam_capture" output="screen">
+        <param name = "ori_img_width" value="$(arg ori_img_width)"/>
+        <param name = "ori_img_height" value="$(arg ori_img_height)"/>
+        <param name = "pub_img_width" value="$(arg pub_img_width)"/>
+        <param name = "pub_img_height" value="$(arg pub_img_height)"/>
+        <param name = "pub_img_height" value="$(arg pub_img_height)"/>
+        <param name = "frame_id" value = "$(arg frame_id)"/>
+        <param name = "image_topic" value = "$(arg image_topic)"/>
+        
+    </node>
+
+</launch>

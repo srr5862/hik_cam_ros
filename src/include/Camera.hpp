@@ -52,12 +52,12 @@ namespace camera
     Camera::Camera(ros::NodeHandle &node)
     {
         handle = NULL;
-        node.param("width", width, 2448);
-        node.param("height", height, 2048);
+        node.param("ori_img_width", width, 0);
+        node.param("ori_img_height", height, 0);
         node.param("FrameRateEnable", FrameRateEnable, true);
-        node.param("FrameRate", FrameRate, 30);
-        node.param("BrustFrameCount", BrustFrameCount, 1);
-        node.param("TriggerMode", TriggerMode, 1);
+        node.param("FrameRate", FrameRate, 20);
+        // node.param("BrustFrameCount", BrustFrameCount, 1);
+        node.param("TriggerMode", TriggerMode, 0);
         node.param("TriggerSource", TriggerSource,7);
         // node.param("AcquisitionMode", AcquisitionMode, 2);
 
